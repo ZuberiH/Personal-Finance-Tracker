@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  user-service:
+    build:
+      context: ./user-service
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: "postgresql://user:password@db/user_db"
+    depends_on:
+      - db
+
+  expense-service:
+    build:
+      context: ./expense-service
+    ports:
+      - "8001:8001"
+    environment:
+      DATABASE_URL: "postgresql://user:password@db/expense_db"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: user_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:
